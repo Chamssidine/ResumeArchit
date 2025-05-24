@@ -2,195 +2,225 @@
 'use client';
 
 import Image from 'next/image';
-import type { ResumePreviewProps } from '@/types/resume';
+import type { ResumeData, ResumePreviewProps, ExperienceEntry, EducationEntry, ProjectEntry, LanguageEntry, CertificationEntry } from '@/types/resume';
 import { getFontClassName } from '@/fonts';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Briefcase, CalendarDays, GraduationCap, HardHat, LanguagesIcon, Linkedin, Mail, MapPin, Phone, Star, User, Link as LinkIcon, Github } from 'lucide-react';
+import { Linkedin, Mail, MapPin, Phone, Link as LinkIcon, Github, User, Briefcase, GraduationCap, Star, HardHat, CalendarDays, LanguagesIcon } from 'lucide-react';
 
-// Helper to format dates (YYYY-MM to Month YYYY or Present)
-const formatDate = (dateStr: string, isEndDate?: boolean) => {
+// Helper to format dates (YYYY-MM or YYYY to Month YYYY or Present)
+const formatDate = (dateStr: string | undefined, isEndDate?: boolean) => {
   if (!dateStr) return isEndDate ? 'Present' : '';
   if (isEndDate && (dateStr.toLowerCase() === 'present' || dateStr === '')) return 'Present';
+  
+  // Check if it's just a year or YYYY-MM
+  if (/^\d{4}$/.test(dateStr)) { // Just a year
+    return dateStr;
+  }
+  
   try {
     const [year, month] = dateStr.split('-');
-    const date = new Date(parseInt(year), parseInt(month) - 1);
-    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    if (year && month) {
+      const date = new Date(parseInt(year), parseInt(month) - 1);
+      return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+    return dateStr; // Fallback for other formats like "2023"
   } catch (e) {
     return dateStr; // fallback if format is unexpected
   }
 };
 
+const SectionTitle: React.FC<{ title: string; color: string }> = ({ title, color }) => (
+  <h2 
+    className="text-xl font-bold mt-6 mb-3 pb-1" 
+    style={{ color: color, borderBottom: `2px solid ${color}` }}
+  >
+    {title.toUpperCase()}
+  </h2>
+);
+
+const SidebarLink: React.FC<{ href?: string; text: string; iconColor: string; Icon?: React.ElementType; isEmail?: boolean; isPhone?: boolean }> = ({ href, text, iconColor, Icon, isEmail, isPhone }) => {
+  if (!text) return null;
+  const linkHref = isEmail ? `mailto:${text}` : isPhone ? `tel:${text}` : href;
+  return (
+    <a href={linkHref} target="_blank" rel="noopener noreferrer" className="flex items-center text-sm hover:underline break-all">
+      {Icon && <Icon className="w-4 h-4 mr-2 flex-shrink-0" style={{ color: iconColor }} />}
+      {text}
+    </a>
+  );
+};
+
+
 export function ResumePreview({ resumeData, personalization, templateId }: ResumePreviewProps) {
   const fontClassName = getFontClassName(personalization.fontFamily);
+  const { contactInfo, professionalSummary, skills, experience, education, projects, certifications, languages } = resumeData;
 
-  const primaryColorStyle = { color: personalization.primaryColor };
-  const accentColorStyle = { color: personalization.accentColor };
-  const borderColorStyle = { borderColor: personalization.primaryColor };
-
-  const renderSectionTitle = (title: string, Icon?: React.ElementType) => (
-    <div className="flex items-center pt-6 pb-2 mb-4 border-b-2" style={borderColorStyle}>
-      {Icon && <Icon className="w-6 h-6 mr-3 flex-shrink-0" style={primaryColorStyle} />}
-      <h2 className="text-2xl font-semibold" style={primaryColorStyle}>
-        {title}
-      </h2>
-    </div>
-  );
-
-  const renderContactItem = (Icon: React.ElementType, text: string | undefined, href?: string) => {
-    if (!text) return null;
-    const content = (
-      <div className="flex items-center text-sm text-muted-foreground mb-1">
-        <Icon className="w-4 h-4 mr-2.5 flex-shrink-0" style={accentColorStyle} />
-        <span className="break-all">{text}</span>
-      </div>
-    );
-    return href ? <a href={href} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-primary transition-colors duration-150">{content}</a> : content;
-  };
+  const sidebarTextColor = '#FFFFFF'; // Text color for dark sidebar
+  const sidebarLinkIconColor = personalization.accentColor; // Use accent for icons in sidebar
 
   return (
     <div
       id="resume-preview-content"
-      className={`p-10 bg-white shadow-xl rounded-lg w-full max-w-3xl mx-auto my-8 ${fontClassName} text-foreground print-exact`}
+      className={`min-h-[297mm] w-full max-w-[210mm] mx-auto bg-card shadow-xl flex ${fontClassName} print-exact`}
       style={{ fontFamily: `var(${getFontClassName(personalization.fontFamily).replace('var(','').replace(')','')}, var(--font-geist-sans))` }}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-8 pb-6 border-b-2" style={borderColorStyle}>
-        <div className="max-w-[calc(100%-10rem)]"> {/* Ensure text doesn't overlap with photo if name is too long */}
-          <h1 className="text-4xl lg:text-5xl font-bold mb-2" style={primaryColorStyle}>
-            {resumeData.contactInfo.name || 'Your Name'}
-          </h1>
-          <div className="space-y-1">
-            {renderContactItem(Mail, resumeData.contactInfo.email, `mailto:${resumeData.contactInfo.email}`)}
-            {renderContactItem(Phone, resumeData.contactInfo.phone, `tel:${resumeData.contactInfo.phone}`)}
-            {renderContactItem(MapPin, resumeData.contactInfo.address)}
-            {renderContactItem(Linkedin, resumeData.contactInfo.linkedin, resumeData.contactInfo.linkedin)}
-            {renderContactItem(Github, resumeData.contactInfo.github, resumeData.contactInfo.github)}
-            {renderContactItem(LinkIcon, resumeData.contactInfo.portfolio, resumeData.contactInfo.portfolio)}
-          </div>
-        </div>
-        {resumeData.photoUrl && (
-          <Avatar className="h-32 w-32 lg:h-36 lg:w-36 rounded-lg shadow-md ml-6 flex-shrink-0">
-            <AvatarImage src={resumeData.photoUrl} alt={resumeData.contactInfo.name || 'User Photo'} data-ai-hint="person photo" />
-            <AvatarFallback className="rounded-lg text-4xl lg:text-5xl">
-              {resumeData.contactInfo.name ? resumeData.contactInfo.name.charAt(0).toUpperCase() : <User size={48} className="lg:size-60"/>}
+      {/* Left "Sidebar" Column */}
+      <div 
+        className="w-[35%] p-6 flex flex-col items-center text-center" 
+        style={{ backgroundColor: personalization.primaryColor, color: sidebarTextColor }}
+      >
+        {contactInfo.photoUrl && (
+          <Avatar className="w-32 h-32 rounded-full border-2 mb-4" style={{ borderColor: sidebarLinkIconColor }}>
+            <AvatarImage src={contactInfo.photoUrl} alt={contactInfo.name || 'User Photo'} data-ai-hint="person photo" />
+            <AvatarFallback className="rounded-full text-4xl" style={{ backgroundColor: personalization.accentColor, color: personalization.primaryColor }}>
+              {contactInfo.name ? contactInfo.name.charAt(0).toUpperCase() : <User size={48}/>}
             </AvatarFallback>
           </Avatar>
         )}
+        <h1 className="text-2xl font-bold mb-1">{contactInfo.name || 'Your Name'}</h1>
+        {contactInfo.title && <p className="text-sm mb-4">{contactInfo.title}</p>}
+        
+        <div className="space-y-2 text-sm text-left w-full">
+          {contactInfo.address && (
+            <div className="flex items-start">
+              <MapPin className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" style={{ color: sidebarLinkIconColor }} />
+              <span>{contactInfo.address}</span>
+            </div>
+          )}
+          {contactInfo.phone && (
+             <div className="flex items-start">
+              <Phone className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" style={{ color: sidebarLinkIconColor }} />
+              <span>{contactInfo.phone}</span>
+            </div>
+          )}
+          {contactInfo.email && (
+            <div className="flex items-start">
+              <Mail className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" style={{ color: sidebarLinkIconColor }} />
+              <a href={`mailto:${contactInfo.email}`} className="hover:underline break-all">{contactInfo.email}</a>
+            </div>
+          )}
+          {contactInfo.linkedin && (
+            <SidebarLink href={contactInfo.linkedin} text={contactInfo.linkedin.replace('https://www.','').replace('linkedin.com/in/','LinkedIn: ')} Icon={Linkedin} iconColor={sidebarLinkIconColor} />
+          )}
+          {contactInfo.github && (
+            <SidebarLink href={contactInfo.github} text={contactInfo.github.replace('https://www.','').replace('github.com/','GitHub: ')} Icon={Github} iconColor={sidebarLinkIconColor} />
+          )}
+          {contactInfo.portfolio && (
+            <SidebarLink href={contactInfo.portfolio} text="Portfolio" Icon={LinkIcon} iconColor={sidebarLinkIconColor} />
+          )}
+        </div>
       </div>
 
-      {/* Professional Summary */}
-      {resumeData.professionalSummary && (
-        <section>
-          {renderSectionTitle('Summary', User)}
-          <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">{resumeData.professionalSummary}</p>
-        </section>
-      )}
+      {/* Right "Content" Column */}
+      <div className="w-[65%] p-8 bg-card text-foreground flex-grow">
+        {professionalSummary && (
+          <section>
+            <SectionTitle title="Profil Professionnel" color={personalization.primaryColor} />
+            <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">{professionalSummary}</p>
+          </section>
+        )}
 
-      {/* Skills */}
-      {resumeData.skills.length > 0 && (
-        <section>
-          {renderSectionTitle('Skills', Star)}
-          <div className="flex flex-wrap gap-2.5 pt-1">
-            {resumeData.skills.map((skill, index) => (
-              <span key={index} className="px-3 py-1.5 text-xs rounded-md border font-medium" style={{ backgroundColor: `${personalization.accentColor}1A`, borderColor: `${personalization.accentColor}80`, color: personalization.accentColor }}>
-                {skill}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
+        {skills.length > 0 && (
+          <section>
+            <SectionTitle title="Compétences Techniques" color={personalization.primaryColor} />
+            <ul className="list-none pl-0 space-y-1">
+              {skills.map((skill, index) => (
+                <li key={index} className="text-sm flex items-start">
+                  <span style={{ color: personalization.primaryColor, marginRight: '10px', lineHeight: '1.5' }}>•</span>
+                  <span>{skill}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      {/* Experience */}
-      {resumeData.experience.filter(exp => exp.company || exp.role).length > 0 && (
-        <section>
-          {renderSectionTitle('Experience', Briefcase)}
-          {resumeData.experience.map((exp) => exp.company || exp.role ? (
-            <div key={exp.id} className="mb-5 last:mb-0">
-              <h3 className="text-lg font-semibold text-foreground">{exp.role || 'Role'}</h3>
-              <p className="text-md font-medium mb-0.5" style={accentColorStyle}>
-                {exp.company || 'Company'}
-                {exp.location && <span className="text-sm text-muted-foreground font-normal"> | {exp.location}</span>}
-              </p>
-              {(exp.startDate || exp.endDate) && (
-                <p className="text-xs text-muted-foreground mb-1.5">
-                  {formatDate(exp.startDate)} - {formatDate(exp.endDate, true)}
-                </p>
-              )}
-              {exp.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{exp.description}</p>}
-            </div>
-          ): null)}
-        </section>
-      )}
-
-      {/* Education */}
-      {resumeData.education.filter(edu => edu.institution || edu.degree).length > 0 && (
-        <section>
-          {renderSectionTitle('Education', GraduationCap)}
-          {resumeData.education.map((edu) => edu.institution || edu.degree ? (
-            <div key={edu.id} className="mb-5 last:mb-0">
-              <h3 className="text-lg font-semibold text-foreground">{edu.degree || 'Degree'} {edu.fieldOfStudy ? <span className="font-normal text-md">in {edu.fieldOfStudy}</span> : ''}</h3>
-              <p className="text-md font-medium mb-0.5" style={accentColorStyle}>{edu.institution || 'Institution'}</p>
-              {(edu.startDate || edu.endDate || edu.gpa) && (
-                <p className="text-xs text-muted-foreground mb-1.5">
-                  {formatDate(edu.startDate)} - {formatDate(edu.endDate, true)}
-                  {edu.gpa && ` | GPA: ${edu.gpa}`}
-                </p>
-              )}
-              {edu.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{edu.description}</p>}
-            </div>
-          ): null)}
-        </section>
-      )}
-
-      {/* Projects */}
-      {resumeData.projects.filter(proj => proj.name).length > 0 && (
-        <section>
-          {renderSectionTitle('Projects', HardHat)}
-          {resumeData.projects.map((proj) => proj.name ? (
-            <div key={proj.id} className="mb-5 last:mb-0">
-              <div className="flex items-center">
-                <h3 className="text-lg font-semibold text-foreground">{proj.name || 'Project Name'}</h3>
-                {proj.link && (
-                  <a href={proj.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-500 hover:underline">
-                    <LinkIcon className="w-4 h-4" style={accentColorStyle}/>
-                  </a>
+        {experience.filter(exp => exp.role || exp.company).length > 0 && (
+          <section>
+            <SectionTitle title="Expériences Professionnelles" color={personalization.primaryColor} />
+            {experience.map((exp) => exp.role || exp.company ? (
+              <div key={exp.id} className="mb-4 last:mb-0">
+                <h3 className="text-md font-semibold text-foreground">
+                  {exp.role} {exp.company && `– ${exp.company}`}
+                </h3>
+                {(exp.startDate || exp.endDate) && (
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {formatDate(exp.startDate)} - {formatDate(exp.endDate, true)}
+                    {exp.location && <span className="ml-1">| {exp.location}</span>}
+                  </p>
                 )}
-              </div>
-              {proj.technologies && <p className="text-xs text-muted-foreground mb-1">Technologies: {proj.technologies}</p>}
-              {proj.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{proj.description}</p>}
-            </div>
-          ): null)}
-        </section>
-      )}
-
-      {/* Certifications */}
-      {resumeData.certifications.filter(cert => cert.name).length > 0 && (
-        <section>
-          {renderSectionTitle('Certifications', CalendarDays)}
-          {resumeData.certifications.map((cert) => cert.name ? (
-            <div key={cert.id} className="mb-3.5 last:mb-0">
-              <h3 className="text-md font-semibold text-foreground">{cert.name || 'Certification Name'}</h3>
-              <p className="text-sm text-muted-foreground">{cert.issuingOrganization || 'Issuing Organization'}{cert.dateIssued ? ` | ${formatDate(cert.dateIssued)}` : ''}</p>
-              {cert.credentialId && <p className="text-xs text-muted-foreground/80 mt-0.5">Credential ID: {cert.credentialId}</p>}
-            </div>
-          ): null)}
-        </section>
-      )}
-
-      {/* Languages */}
-      {resumeData.languages.filter(lang => lang.language).length > 0 && (
-        <section>
-          {renderSectionTitle('Languages', LanguagesIcon)}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1">
-            {resumeData.languages.map((lang) => lang.language ? (
-              <div key={lang.id} className="text-sm text-foreground/90 flex justify-between">
-                <span>{lang.language || 'Language'}</span>
-                <span className="font-medium text-muted-foreground text-right">{lang.proficiency || 'Proficiency'}</span>
+                {exp.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{exp.description}</p>}
               </div>
             ): null)}
-          </div>
-        </section>
-      )}
+          </section>
+        )}
+        
+        {projects.filter(proj => proj.name).length > 0 && (
+          <section>
+            <SectionTitle title="Projets Notables" color={personalization.primaryColor} />
+            {projects.map((proj) => proj.name ? (
+              <div key={proj.id} className="mb-4 last:mb-0">
+                 <h3 className="text-md font-semibold text-foreground flex items-center">
+                  {proj.name}
+                  {proj.link && (
+                    <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2">
+                      <LinkIcon className="w-3 h-3" style={{ color: personalization.accentColor }}/>
+                    </a>
+                  )}
+                </h3>
+                {proj.technologies && <p className="text-xs text-muted-foreground mb-0.5">Technologies: {proj.technologies}</p>}
+                {proj.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{proj.description}</p>}
+              </div>
+            ): null)}
+          </section>
+        )}
+
+        {education.filter(edu => edu.institution || edu.degree).length > 0 && (
+          <section>
+            <SectionTitle title="Formation" color={personalization.primaryColor} />
+            {education.map((edu) => edu.institution || edu.degree ? (
+              <div key={edu.id} className="mb-4 last:mb-0">
+                <h3 className="text-md font-semibold text-foreground">
+                  {edu.degree} {edu.fieldOfStudy && `in ${edu.fieldOfStudy}`}
+                </h3>
+                <p className="text-sm font-medium mb-0.5" style={{ color: personalization.accentColor }}>{edu.institution}</p>
+                {(edu.startDate || edu.endDate) && (
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {formatDate(edu.startDate)} - {formatDate(edu.endDate, true)}
+                    {edu.gpa && ` | GPA: ${edu.gpa}`}
+                  </p>
+                )}
+                {edu.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{edu.description}</p>}
+              </div>
+            ): null)}
+          </section>
+        )}
+
+        {certifications && certifications.filter(cert => cert.name).length > 0 && (
+          <section>
+            <SectionTitle title="Certifications" color={personalization.primaryColor} />
+            {certifications.map((cert) => cert.name ? (
+              <div key={cert.id} className="mb-3 last:mb-0">
+                <h3 className="text-md font-semibold text-foreground">{cert.name}</h3>
+                <p className="text-sm text-muted-foreground">{cert.issuingOrganization}{cert.dateIssued ? ` | ${formatDate(cert.dateIssued)}` : ''}</p>
+                {cert.credentialId && <p className="text-xs text-muted-foreground/80 mt-0.5">Credential ID: {cert.credentialId}</p>}
+              </div>
+            ): null)}
+          </section>
+        )}
+
+        {languages.length > 0 && (
+          <section>
+            <SectionTitle title="Langues" color={personalization.primaryColor} />
+            <ul className="list-none pl-0 space-y-1">
+              {languages.map((lang) => lang.language ? (
+                <li key={lang.id} className="text-sm flex items-start">
+                  <span style={{ color: personalization.primaryColor, marginRight: '10px', lineHeight: '1.5' }}>•</span>
+                  <span><strong>{lang.language}:</strong> {lang.proficiency}</span>
+                </li>
+              ): null)}
+            </ul>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 
 export interface ContactInfo {
   name: string;
+  title: string; // Added for job title/tagline
   email: string;
   phone: string;
   address: string;
@@ -16,7 +17,7 @@ export interface ExperienceEntry {
   startDate: string;
   endDate: string;
   description: string;
-  location: string;
+  location: string; // Location was in HTML, ensure it's used if available
 }
 
 export interface EducationEntry {
@@ -26,8 +27,8 @@ export interface EducationEntry {
   fieldOfStudy: string;
   startDate: string;
   endDate: string;
-  gpa: string;
-  description: string;
+  gpa: string; // GPA wasn't in HTML, can be optional
+  description: string; // Description can be course details or achievements
 }
 
 export interface ProjectEntry {
@@ -49,7 +50,7 @@ export interface CertificationEntry {
 export interface LanguageEntry {
   id: string;
   language: string;
-  proficiency: 'Beginner' | 'Intermediate' | 'Advanced' | 'Fluent' | 'Native';
+  proficiency: 'Beginner' | 'Intermediate' | 'Advanced' | 'Fluent' | 'Native' | 'Courant' | 'Professionnel'; // Added from HTML
 }
 
 export interface ResumeData {
@@ -60,7 +61,7 @@ export interface ResumeData {
   experience: ExperienceEntry[];
   education: EducationEntry[];
   projects: ProjectEntry[];
-  certifications: CertificationEntry[];
+  certifications: CertificationEntry[]; // Not in provided HTML, will be hidden if empty
   languages: LanguageEntry[];
 }
 

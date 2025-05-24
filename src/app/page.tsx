@@ -17,106 +17,122 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
 
 const initialResumeData: ResumeData = {
-  photoUrl: 'https://placehold.co/300x300.png',
+  photoUrl: 'https://i.imgur.com/ZBfWnXU.png', // From HTML
   contactInfo: {
-    name: 'Alex Johnson',
-    email: 'alex.johnson@example.com',
-    phone: '555-123-4567',
-    address: '123 Main Street, Anytown, USA',
-    linkedin: 'linkedin.com/in/alexjohnson',
-    github: 'github.com/alexjohnson',
-    portfolio: 'alexjohnson.dev',
+    name: 'Chamssidine Abdallah Ambinintsoa', // From HTML
+    title: 'Développeur Fullstack | Mobile | Back-end', // From HTML
+    email: 'chamssidineab@gmail.com', // From HTML
+    phone: '+261 34 03 394 20', // From HTML
+    address: 'Antananarivo, Madagascar', // From HTML
+    linkedin: 'https://www.linkedin.com/in/abdallah-ambininstoa-chamssidine-219450219/', // From HTML
+    github: 'https://github.com/Chamssidine', // From HTML
+    portfolio: '', // Not in HTML, leave empty or add example
   },
   professionalSummary:
-    'Highly motivated and results-oriented software engineer with 5+ years of experience in developing and implementing innovative software solutions. Proficient in JavaScript, React, and Node.js, with a strong background in agile methodologies and a passion for creating user-centric applications. Proven ability to lead projects and collaborate effectively in team environments.',
-  skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'Next.js', 'Tailwind CSS', 'SQL', 'NoSQL', 'Docker', 'AWS'],
-  experience: [
+    'Développeur Fullstack passionné avec une solide expérience dans le développement mobile, back-end, web et immersif. J’ai également travaillé sur des projets utilisant l’IA et la blockchain, avec une attention particulière à la sécurité et à la performance. Curieux, rigoureux et proactif.', // From HTML
+  skills: [ // From HTML
+    'Kotlin, Jetpack Compose, Kotlin Multiplatform',
+    'C#, Unity, .NET, ASP.NET',
+    'Python, Java, PHP, JavaScript, HTML/CSS',
+    'React, Node.js',
+    'MySQL, Oracle, Firebase',
+    'OpenAI API, Blockchain (Solidity)',
+    'CI/CD, Git, DevOps, Firebase',
+    'Sécurité, Authentification, Performance'
+  ],
+  experience: [ // From HTML
     {
       id: generateId(),
-      company: 'Tech Solutions Inc.',
-      role: 'Senior Software Engineer',
-      startDate: '2021-06',
-      endDate: 'Present',
-      description:
-        '- Led a team of 5 engineers in the development of a new SaaS platform, resulting in a 20% increase in user engagement.\n- Designed and implemented RESTful APIs for various microservices.\n- Optimized application performance, reducing load times by 30%.',
-      location: 'San Francisco, CA',
+      company: 'Freelance',
+      role: 'Développeur Mobile',
+      startDate: '2023', // Simplified date, form expects YYYY-MM
+      endDate: 'Présent',
+      description: 'Applications Android avec Jetpack Compose, intégration API, stockage cloud',
+      location: '', // Not specified directly for this role in HTML
     },
     {
       id: generateId(),
-      company: 'Innovatech Ltd.',
-      role: 'Software Engineer',
-      startDate: '2018-07',
-      endDate: '2021-05',
-      description:
-        '- Developed and maintained front-end components using React and Redux.\n- Collaborated with UX/UI designers to create responsive and accessible user interfaces.\n- Participated in code reviews and contributed to improving code quality.',
-      location: 'Austin, TX',
+      company: 'i-Oasis VR Training',
+      role: 'Développeur Back-End',
+      startDate: '2022',
+      endDate: '2023',
+      description: 'Développement d\'API sécurisées avec ASP.NET, intégration de la blockchain, gestion des utilisateurs, collaboration avec les équipes mobile et VR.',
+      location: '',
+    },
+    {
+      id: generateId(),
+      company: 'i-Oasis VR Training',
+      role: 'Développeur Unity C#',
+      startDate: '2021',
+      endDate: '2022',
+      description: 'Conception de simulations interactives VR, optimisation graphique, intégration IA dans les environnements immersifs.',
+      location: '',
+    },
+     {
+      id: generateId(),
+      company: 'Projet Personnel',
+      role: 'Développeur Fullstack',
+      startDate: '2022',
+      endDate: '2023',
+      description: 'Développement d\'une application de gestion de données RH et financières en React/Node.js avec authentification sécurisée, génération automatique de documents PDF et dashboard analytique.',
+      location: '',
     },
   ],
-  education: [
+  education: [ // From HTML
     {
       id: generateId(),
-      institution: 'State University',
-      degree: 'Master of Science',
-      fieldOfStudy: 'Computer Science',
-      startDate: '2016-08',
-      endDate: '2018-05',
-      gpa: '3.9/4.0',
-      description: 'Thesis on Machine Learning applications in e-commerce. Graduated with Honors.',
-    },
-    {
-      id: generateId(),
-      institution: 'City College',
-      degree: 'Bachelor of Science',
-      fieldOfStudy: 'Software Engineering',
-      startDate: '2012-08',
-      endDate: '2016-05',
-      gpa: '3.7/4.0',
-      description: 'Dean\'s List for 4 semesters. Capstone project involved developing a mobile app for local community services.',
+      institution: 'E-Media University',
+      degree: 'Licence en Informatique',
+      fieldOfStudy: '', // Not specified, can be combined with degree
+      startDate: '2018',
+      endDate: '2021',
+      gpa: '',
+      description: '',
     },
   ],
-  projects: [
+  projects: [ // From HTML
     {
       id: generateId(),
-      name: 'E-commerce Platform',
-      description: 'A full-stack e-commerce website with features like product listing, shopping cart, user authentication, and order processing. Built with Next.js, Stripe, and Prisma.',
-      technologies: 'Next.js, TypeScript, Stripe, Prisma, Tailwind CSS',
-      link: 'github.com/alexjohnson/ecommerce-project',
+      name: 'ImageAuth',
+      description: 'Authentification d’images via ASP.NET & Blockchain',
+      technologies: 'ASP.NET, Blockchain',
+      link: '',
     },
     {
       id: generateId(),
-      name: 'Task Management App',
-      description: 'A Kanban-style task management application allowing users to create, organize, and track tasks. Implemented drag-and-drop functionality and real-time updates.',
-      technologies: 'React, Firebase, Zustand, Framer Motion',
-      link: 'github.com/alexjohnson/task-manager',
+      name: 'JobFinder AI',
+      description: 'Application d’optimisation de recherche d’emploi développée en React, Node.js avec IA (OpenAI)',
+      technologies: 'React, Node.js, OpenAI',
+      link: '',
     },
+    {
+      id: generateId(),
+      name: 'CVBuilder',
+      description: 'Application web de création de CV interactive avec React.js (aperçu en temps réel + export PDF)',
+      technologies: 'React.js',
+      link: '',
+    },
+     { id: generateId(), name: 'RecruteMoi', description: 'Simulateur d’entretien IA (OpenAI API)', technologies: 'OpenAI API', link: '' },
+     { id: generateId(), name: 'OrienteMoi', description: 'Application d’orientation pro interactive', technologies: '', link: '' },
+     { id: generateId(), name: 'CrowdManagement VR', description: 'Simulation VR IA', technologies: 'VR, AI', link: '' },
+     { id: generateId(), name: 'Facial Recognition System', description: 'Détection et reconnaissance faciale (Python)', technologies: 'Python', link: '' },
+     { id: generateId(), name: 'GestPerso', description: 'Gestion du personnel (ASP.NET + SQL)', technologies: 'ASP.NET, SQL', link: '' },
+     { id: generateId(), name: 'DataGuard', description: 'Gestion de données sécurisées (Cloud + .NET)', technologies: 'Cloud, .NET', link: '' },
+     { id: generateId(), name: 'BudgetGuard', description: 'Suivi budgétaire personnel (Android)', technologies: 'Android', link: '' },
+     { id: generateId(), name: 'CertiVote', description: 'Plateforme de vote électronique Blockchain', technologies: 'Blockchain', link: '' },
   ],
-  certifications: [
-    {
-      id: generateId(),
-      name: 'AWS Certified Solutions Architect - Associate',
-      issuingOrganization: 'Amazon Web Services',
-      dateIssued: '2022-03',
-      credentialId: 'AWS-SA-12345',
-    },
-    {
-      id: generateId(),
-      name: 'Certified ScrumMaster (CSM)',
-      issuingOrganization: 'Scrum Alliance',
-      dateIssued: '2020-11',
-      credentialId: 'CSM-67890',
-    },
-  ],
-  languages: [
-    { id: generateId(), language: 'English', proficiency: 'Native' },
-    { id: generateId(), language: 'Spanish', proficiency: 'Advanced' },
-    { id: generateId(), language: 'German', proficiency: 'Intermediate' },
+  certifications: [], // Not in provided HTML
+  languages: [ // From HTML
+    { id: generateId(), language: 'Français', proficiency: 'Courant' },
+    { id: generateId(), language: 'Anglais', proficiency: 'Professionnel' },
+    { id: generateId(), language: 'Allemand', proficiency: 'Intermediate' }, // Mapped B1 to Intermediate
   ],
 };
 
 const initialPersonalization: PersonalizationConfig = {
-  primaryColor: '#A778D1', // Strong Violet
-  accentColor: '#78A7D1',  // Sky Blue
-  fontFamily: 'Geist Sans', // Default from layout
+  primaryColor: '#003366', // Dark Blue from HTML sidebar
+  accentColor: '#78A7D1',  // Sky Blue (can be adjusted, used for icons/links)
+  fontFamily: 'Geist Sans', 
 };
 
 export default function ResumeArchitectPage() {
@@ -132,7 +148,7 @@ export default function ResumeArchitectPage() {
   }, []);
   
   const handleExportPdf = async () => {
-    if (!isMounted) return; // Ensure client-side only execution
+    if (!isMounted) return; 
     setIsExportingPdf(true);
     try {
       await exportToPdf('resume-preview-content', `${resumeData.contactInfo.name.replace(/\s+/g, '_') || 'resume'}_${selectedTemplateId}.pdf`);
@@ -146,7 +162,7 @@ export default function ResumeArchitectPage() {
   };
 
   if (!isMounted) {
-    return null; // Or a loading skeleton for the entire page
+    return null; 
   }
 
   return (
@@ -154,7 +170,6 @@ export default function ResumeArchitectPage() {
       <AppHeader onExportPdf={handleExportPdf} isExporting={isExportingPdf} />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:grid-cols-5">
-          {/* Left Column: Controls & Form */}
           <div className="lg:col-span-1 xl:col-span-2 space-y-6">
             <Card>
               <CardContent className="p-6">
@@ -176,13 +191,12 @@ export default function ResumeArchitectPage() {
             <Separator className="my-8" />
             
             <h2 className="text-2xl font-semibold mb-4 text-primary">Edit Content</h2>
-            <ScrollArea className="h-auto max-h-[calc(100vh-200px)] lg:max-h-none pr-4 -mr-4"> {/* Adjust max-h as needed */}
+            <ScrollArea className="h-auto max-h-[calc(100vh-200px)] lg:max-h-none pr-4 -mr-4">
                 <ResumeForm resumeData={resumeData} setResumeData={setResumeData} />
             </ScrollArea>
           </div>
 
-          {/* Right Column: Preview */}
-          <div className="lg:col-span-2 xl:col-span-3 sticky top-24 self-start"> {/* Make preview sticky */}
+          <div className="lg:col-span-2 xl:col-span-3 sticky top-24 self-start"> 
             <ScrollArea className="h-auto max-h-[calc(100vh-120px)] rounded-lg border shadow-xl">
               <ResumePreview
                 resumeData={resumeData}
