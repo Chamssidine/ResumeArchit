@@ -84,10 +84,17 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  /*
+  The previous global border `* { @apply border-border; }` was removed
+  as it's too aggressive and can cause unintended styling issues with
+  complex components. Borders should be applied selectively.
+  */
   body {
     @apply bg-background text-foreground;
+    /* Ensure all elements use border-box sizing, which is standard with Tailwind's preflight */
+    /* but good to be mindful of if removing preflight or adding aggressive global styles. */
+    /* Preflight typically includes this: 
+      *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: theme(borderColor.DEFAULT, currentColor); }
+    */
   }
 }
