@@ -1,8 +1,4 @@
-Thank you for making your repository public. I've reviewed your GitHub repository [Chamssidine/ResumeArchit](https://github.com/Chamssidine/ResumeArchit) and have updated the `README.md` to accurately reflect your project's structure and features.
 
----
-
-```markdown
 # 📄 ResumeArchit
 
 **ResumeArchit** is a web application that empowers users to create, customize, and download professional resumes effortlessly. Built with **React**, **Next.js**, and **Firebase**, it offers a seamless user experience with real-time preview and cloud storage capabilities.
@@ -110,8 +106,6 @@ Ensure that you set the same environment variables in your Vercel project settin
 **Chamssidine**
 [LinkedIn](https://www.linkedin.com/in/chamssidine/) | [GitHub](https://github.com/Chamssidine)
 
-## 📄 License
 
-This project is licensed under the MIT License.
 
 
