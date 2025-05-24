@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,15 +17,100 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
 
 const initialResumeData: ResumeData = {
-  photoUrl: '',
-  contactInfo: { name: '', email: '', phone: '', address: '', linkedin: '', github: '', portfolio: '' },
-  professionalSummary: '',
-  skills: [],
-  experience: [{ id: generateId(), company: '', role: '', startDate: '', endDate: '', description: '', location: '' }],
-  education: [{ id: generateId(), institution: '', degree: '', fieldOfStudy: '', startDate: '', endDate: '', gpa: '', description: '' }],
-  projects: [],
-  certifications: [],
-  languages: [],
+  photoUrl: 'https://placehold.co/300x300.png',
+  contactInfo: {
+    name: 'Alex Johnson',
+    email: 'alex.johnson@example.com',
+    phone: '555-123-4567',
+    address: '123 Main Street, Anytown, USA',
+    linkedin: 'linkedin.com/in/alexjohnson',
+    github: 'github.com/alexjohnson',
+    portfolio: 'alexjohnson.dev',
+  },
+  professionalSummary:
+    'Highly motivated and results-oriented software engineer with 5+ years of experience in developing and implementing innovative software solutions. Proficient in JavaScript, React, and Node.js, with a strong background in agile methodologies and a passion for creating user-centric applications. Proven ability to lead projects and collaborate effectively in team environments.',
+  skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'Next.js', 'Tailwind CSS', 'SQL', 'NoSQL', 'Docker', 'AWS'],
+  experience: [
+    {
+      id: generateId(),
+      company: 'Tech Solutions Inc.',
+      role: 'Senior Software Engineer',
+      startDate: '2021-06',
+      endDate: 'Present',
+      description:
+        '- Led a team of 5 engineers in the development of a new SaaS platform, resulting in a 20% increase in user engagement.\n- Designed and implemented RESTful APIs for various microservices.\n- Optimized application performance, reducing load times by 30%.',
+      location: 'San Francisco, CA',
+    },
+    {
+      id: generateId(),
+      company: 'Innovatech Ltd.',
+      role: 'Software Engineer',
+      startDate: '2018-07',
+      endDate: '2021-05',
+      description:
+        '- Developed and maintained front-end components using React and Redux.\n- Collaborated with UX/UI designers to create responsive and accessible user interfaces.\n- Participated in code reviews and contributed to improving code quality.',
+      location: 'Austin, TX',
+    },
+  ],
+  education: [
+    {
+      id: generateId(),
+      institution: 'State University',
+      degree: 'Master of Science',
+      fieldOfStudy: 'Computer Science',
+      startDate: '2016-08',
+      endDate: '2018-05',
+      gpa: '3.9/4.0',
+      description: 'Thesis on Machine Learning applications in e-commerce. Graduated with Honors.',
+    },
+    {
+      id: generateId(),
+      institution: 'City College',
+      degree: 'Bachelor of Science',
+      fieldOfStudy: 'Software Engineering',
+      startDate: '2012-08',
+      endDate: '2016-05',
+      gpa: '3.7/4.0',
+      description: 'Dean\'s List for 4 semesters. Capstone project involved developing a mobile app for local community services.',
+    },
+  ],
+  projects: [
+    {
+      id: generateId(),
+      name: 'E-commerce Platform',
+      description: 'A full-stack e-commerce website with features like product listing, shopping cart, user authentication, and order processing. Built with Next.js, Stripe, and Prisma.',
+      technologies: 'Next.js, TypeScript, Stripe, Prisma, Tailwind CSS',
+      link: 'github.com/alexjohnson/ecommerce-project',
+    },
+    {
+      id: generateId(),
+      name: 'Task Management App',
+      description: 'A Kanban-style task management application allowing users to create, organize, and track tasks. Implemented drag-and-drop functionality and real-time updates.',
+      technologies: 'React, Firebase, Zustand, Framer Motion',
+      link: 'github.com/alexjohnson/task-manager',
+    },
+  ],
+  certifications: [
+    {
+      id: generateId(),
+      name: 'AWS Certified Solutions Architect - Associate',
+      issuingOrganization: 'Amazon Web Services',
+      dateIssued: '2022-03',
+      credentialId: 'AWS-SA-12345',
+    },
+    {
+      id: generateId(),
+      name: 'Certified ScrumMaster (CSM)',
+      issuingOrganization: 'Scrum Alliance',
+      dateIssued: '2020-11',
+      credentialId: 'CSM-67890',
+    },
+  ],
+  languages: [
+    { id: generateId(), language: 'English', proficiency: 'Native' },
+    { id: generateId(), language: 'Spanish', proficiency: 'Advanced' },
+    { id: generateId(), language: 'German', proficiency: 'Intermediate' },
+  ],
 };
 
 const initialPersonalization: PersonalizationConfig = {
