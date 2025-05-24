@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -27,9 +28,9 @@ export function ResumePreview({ resumeData, personalization, templateId }: Resum
   const borderColorStyle = { borderColor: personalization.primaryColor };
 
   const renderSectionTitle = (title: string, Icon?: React.ElementType) => (
-    <div className="flex items-center mb-3 mt-6">
-      {Icon && <Icon className="w-5 h-5 mr-2" style={primaryColorStyle} />}
-      <h2 className="text-xl font-bold" style={primaryColorStyle}>
+    <div className="flex items-center pt-6 pb-2 mb-4 border-b-2" style={borderColorStyle}>
+      {Icon && <Icon className="w-6 h-6 mr-3 flex-shrink-0" style={primaryColorStyle} />}
+      <h2 className="text-2xl font-semibold" style={primaryColorStyle}>
         {title}
       </h2>
     </div>
@@ -38,28 +39,27 @@ export function ResumePreview({ resumeData, personalization, templateId }: Resum
   const renderContactItem = (Icon: React.ElementType, text: string | undefined, href?: string) => {
     if (!text) return null;
     const content = (
-      <div className="flex items-center text-sm text-gray-700 mb-1">
-        <Icon className="w-3.5 h-3.5 mr-2" style={accentColorStyle} />
-        {text}
+      <div className="flex items-center text-sm text-muted-foreground mb-1">
+        <Icon className="w-4 h-4 mr-2.5 flex-shrink-0" style={accentColorStyle} />
+        <span className="break-all">{text}</span>
       </div>
     );
-    return href ? <a href={href} target="_blank" rel="noopener noreferrer" className="hover:underline">{content}</a> : content;
+    return href ? <a href={href} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-primary transition-colors duration-150">{content}</a> : content;
   };
 
   return (
     <div
       id="resume-preview-content"
-      className={`p-8 bg-white shadow-lg rounded-lg w-full max-w-3xl mx-auto my-8 ${fontClassName} text-gray-800 print-exact`}
+      className={`p-10 bg-white shadow-xl rounded-lg w-full max-w-3xl mx-auto my-8 ${fontClassName} text-foreground print-exact`}
       style={{ fontFamily: `var(${getFontClassName(personalization.fontFamily).replace('var(','').replace(')','')}, var(--font-geist-sans))` }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4" style={{ borderBottom: `2px solid ${personalization.primaryColor}` }}>
-        <div>
-          <h1 className="text-4xl font-bold" style={primaryColorStyle}>
+      <div className="flex items-start justify-between mb-8 pb-6 border-b-2" style={borderColorStyle}>
+        <div className="max-w-[calc(100%-10rem)]"> {/* Ensure text doesn't overlap with photo if name is too long */}
+          <h1 className="text-4xl lg:text-5xl font-bold mb-2" style={primaryColorStyle}>
             {resumeData.contactInfo.name || 'Your Name'}
           </h1>
-          {/* Contact Info under name */}
-          <div className="mt-2 space-y-0.5">
+          <div className="space-y-1">
             {renderContactItem(Mail, resumeData.contactInfo.email, `mailto:${resumeData.contactInfo.email}`)}
             {renderContactItem(Phone, resumeData.contactInfo.phone, `tel:${resumeData.contactInfo.phone}`)}
             {renderContactItem(MapPin, resumeData.contactInfo.address)}
@@ -69,10 +69,10 @@ export function ResumePreview({ resumeData, personalization, templateId }: Resum
           </div>
         </div>
         {resumeData.photoUrl && (
-          <Avatar className="h-32 w-32 rounded-md">
-            <AvatarImage src={resumeData.photoUrl} alt={resumeData.contactInfo.name} data-ai-hint="person photo" />
-            <AvatarFallback className="rounded-md text-4xl">
-              {resumeData.contactInfo.name ? resumeData.contactInfo.name.charAt(0).toUpperCase() : <User size={48}/>}
+          <Avatar className="h-32 w-32 lg:h-36 lg:w-36 rounded-lg shadow-md ml-6 flex-shrink-0">
+            <AvatarImage src={resumeData.photoUrl} alt={resumeData.contactInfo.name || 'User Photo'} data-ai-hint="person photo" />
+            <AvatarFallback className="rounded-lg text-4xl lg:text-5xl">
+              {resumeData.contactInfo.name ? resumeData.contactInfo.name.charAt(0).toUpperCase() : <User size={48} className="lg:size-60"/>}
             </AvatarFallback>
           </Avatar>
         )}
@@ -82,7 +82,7 @@ export function ResumePreview({ resumeData, personalization, templateId }: Resum
       {resumeData.professionalSummary && (
         <section>
           {renderSectionTitle('Summary', User)}
-          <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{resumeData.professionalSummary}</p>
+          <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">{resumeData.professionalSummary}</p>
         </section>
       )}
 
@@ -90,9 +90,9 @@ export function ResumePreview({ resumeData, personalization, templateId }: Resum
       {resumeData.skills.length > 0 && (
         <section>
           {renderSectionTitle('Skills', Star)}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5 pt-1">
             {resumeData.skills.map((skill, index) => (
-              <span key={index} className="px-3 py-1 text-xs rounded-full border" style={{ backgroundColor: `${personalization.accentColor}20`, borderColor: personalization.accentColor, color: personalization.accentColor }}>
+              <span key={index} className="px-3 py-1.5 text-xs rounded-md border font-medium" style={{ backgroundColor: `${personalization.accentColor}1A`, borderColor: `${personalization.accentColor}80`, color: personalization.accentColor }}>
                 {skill}
               </span>
             ))}
@@ -101,86 +101,94 @@ export function ResumePreview({ resumeData, personalization, templateId }: Resum
       )}
 
       {/* Experience */}
-      {resumeData.experience.length > 0 && (
+      {resumeData.experience.filter(exp => exp.company || exp.role).length > 0 && (
         <section>
           {renderSectionTitle('Experience', Briefcase)}
-          {resumeData.experience.map((exp) => (
-            <div key={exp.id} className="mb-4">
-              <h3 className="text-lg font-semibold">{exp.role || 'Role'}</h3>
-              <p className="text-md font-medium" style={accentColorStyle}>{exp.company || 'Company'} | {exp.location || 'Location'}</p>
-              <p className="text-xs text-gray-500 mb-1">
-                {formatDate(exp.startDate)} - {formatDate(exp.endDate, true)}
+          {resumeData.experience.map((exp) => exp.company || exp.role ? (
+            <div key={exp.id} className="mb-5 last:mb-0">
+              <h3 className="text-lg font-semibold text-foreground">{exp.role || 'Role'}</h3>
+              <p className="text-md font-medium mb-0.5" style={accentColorStyle}>
+                {exp.company || 'Company'}
+                {exp.location && <span className="text-sm text-muted-foreground font-normal"> | {exp.location}</span>}
               </p>
-              {exp.description && <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{exp.description}</p>}
+              {(exp.startDate || exp.endDate) && (
+                <p className="text-xs text-muted-foreground mb-1.5">
+                  {formatDate(exp.startDate)} - {formatDate(exp.endDate, true)}
+                </p>
+              )}
+              {exp.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{exp.description}</p>}
             </div>
-          ))}
+          ): null)}
         </section>
       )}
 
       {/* Education */}
-      {resumeData.education.length > 0 && (
+      {resumeData.education.filter(edu => edu.institution || edu.degree).length > 0 && (
         <section>
           {renderSectionTitle('Education', GraduationCap)}
-          {resumeData.education.map((edu) => (
-            <div key={edu.id} className="mb-4">
-              <h3 className="text-lg font-semibold">{edu.degree || 'Degree'} {edu.fieldOfStudy ? `in ${edu.fieldOfStudy}` : ''}</h3>
-              <p className="text-md font-medium" style={accentColorStyle}>{edu.institution || 'Institution'}</p>
-              <p className="text-xs text-gray-500 mb-1">
-                {formatDate(edu.startDate)} - {formatDate(edu.endDate, true)}
-                {edu.gpa && ` | GPA: ${edu.gpa}`}
-              </p>
-              {edu.description && <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{edu.description}</p>}
+          {resumeData.education.map((edu) => edu.institution || edu.degree ? (
+            <div key={edu.id} className="mb-5 last:mb-0">
+              <h3 className="text-lg font-semibold text-foreground">{edu.degree || 'Degree'} {edu.fieldOfStudy ? <span className="font-normal text-md">in {edu.fieldOfStudy}</span> : ''}</h3>
+              <p className="text-md font-medium mb-0.5" style={accentColorStyle}>{edu.institution || 'Institution'}</p>
+              {(edu.startDate || edu.endDate || edu.gpa) && (
+                <p className="text-xs text-muted-foreground mb-1.5">
+                  {formatDate(edu.startDate)} - {formatDate(edu.endDate, true)}
+                  {edu.gpa && ` | GPA: ${edu.gpa}`}
+                </p>
+              )}
+              {edu.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{edu.description}</p>}
             </div>
-          ))}
+          ): null)}
         </section>
       )}
 
       {/* Projects */}
-      {resumeData.projects.length > 0 && (
+      {resumeData.projects.filter(proj => proj.name).length > 0 && (
         <section>
           {renderSectionTitle('Projects', HardHat)}
-          {resumeData.projects.map((proj) => (
-            <div key={proj.id} className="mb-4">
+          {resumeData.projects.map((proj) => proj.name ? (
+            <div key={proj.id} className="mb-5 last:mb-0">
               <div className="flex items-center">
-                <h3 className="text-lg font-semibold">{proj.name || 'Project Name'}</h3>
+                <h3 className="text-lg font-semibold text-foreground">{proj.name || 'Project Name'}</h3>
                 {proj.link && (
                   <a href={proj.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-blue-500 hover:underline">
                     <LinkIcon className="w-4 h-4" style={accentColorStyle}/>
                   </a>
                 )}
               </div>
-              {proj.technologies && <p className="text-xs text-gray-500 mb-1">Technologies: {proj.technologies}</p>}
-              {proj.description && <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{proj.description}</p>}
+              {proj.technologies && <p className="text-xs text-muted-foreground mb-1">Technologies: {proj.technologies}</p>}
+              {proj.description && <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{proj.description}</p>}
             </div>
-          ))}
+          ): null)}
         </section>
       )}
 
       {/* Certifications */}
-      {resumeData.certifications.length > 0 && (
+      {resumeData.certifications.filter(cert => cert.name).length > 0 && (
         <section>
           {renderSectionTitle('Certifications', CalendarDays)}
-          {resumeData.certifications.map((cert) => (
-            <div key={cert.id} className="mb-3">
-              <h3 className="text-md font-semibold">{cert.name || 'Certification Name'}</h3>
-              <p className="text-sm text-gray-600">{cert.issuingOrganization || 'Issuing Organization'}{cert.dateIssued ? ` | ${formatDate(cert.dateIssued)}` : ''}</p>
-              {cert.credentialId && <p className="text-xs text-gray-500">Credential ID: {cert.credentialId}</p>}
+          {resumeData.certifications.map((cert) => cert.name ? (
+            <div key={cert.id} className="mb-3.5 last:mb-0">
+              <h3 className="text-md font-semibold text-foreground">{cert.name || 'Certification Name'}</h3>
+              <p className="text-sm text-muted-foreground">{cert.issuingOrganization || 'Issuing Organization'}{cert.dateIssued ? ` | ${formatDate(cert.dateIssued)}` : ''}</p>
+              {cert.credentialId && <p className="text-xs text-muted-foreground/80 mt-0.5">Credential ID: {cert.credentialId}</p>}
             </div>
-          ))}
+          ): null)}
         </section>
       )}
 
       {/* Languages */}
-      {resumeData.languages.length > 0 && (
+      {resumeData.languages.filter(lang => lang.language).length > 0 && (
         <section>
           {renderSectionTitle('Languages', LanguagesIcon)}
-          <ul className="list-disc list-inside">
-            {resumeData.languages.map((lang) => (
-              <li key={lang.id} className="text-sm text-gray-700">
-                {lang.language || 'Language'} - <span className="font-medium">{lang.proficiency || 'Proficiency'}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1">
+            {resumeData.languages.map((lang) => lang.language ? (
+              <div key={lang.id} className="text-sm text-foreground/90 flex justify-between">
+                <span>{lang.language || 'Language'}</span>
+                <span className="font-medium text-muted-foreground text-right">{lang.proficiency || 'Proficiency'}</span>
+              </div>
+            ): null)}
+          </div>
         </section>
       )}
     </div>
